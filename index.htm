@@ -1,0 +1,117 @@
+<html>
+
+<head>
+  <title>Max Camera Resolution</title>
+  <style>
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    #error {
+      color: red;
+    }
+    #control {
+      margin: 5px;
+    }
+    #video-wrapper {
+      flex: 1;
+      background-color: black;
+      position: relative;
+    }
+    #spec {
+      color: white;
+      background-color:rgba(0, 0, 0, 0.5);;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    #video {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+
+  <script>
+    window.onload = (event) => {
+      var video = document.querySelector('#video')
+      var videoTracks
+
+      hide('#disconnect')
+      hide('#spec')
+
+      document.querySelector('#connect').onclick = (event) => {
+        navigator.mediaDevices.getUserMedia({ video: true, width: 3840 })
+          .then(function (stream) {
+            videoTracks = stream.getVideoTracks()     
+            videoTracks[0].applyConstraints({
+              width: videoTracks[0].getCapabilities().width.max,
+              height: videoTracks[0].getCapabilities().height.max,
+              frameRate: videoTracks[0].getCapabilities().frameRate.max,
+              resizeMode: "crop-and-scale"
+            }).then(() => {
+              video.srcObject = stream
+              video.onloadedmetadata = function(event) {
+                video.play();
+              };
+              setText('#device', videoTracks[0].label)
+              setText('#width', videoTracks[0].getSettings().width)
+              setText('#height', videoTracks[0].getSettings().height)
+              setText('#frame-rate', videoTracks[0].getSettings().frameRate)
+              setText('#aspect-ratio', videoTracks[0].getSettings().aspectRatio)
+              hide('#connect')
+              show('#disconnect')
+              show('#spec')
+            })
+          })
+          .catch(function (error) {
+            errorMsg(error)
+          })
+      }
+
+      document.querySelector('#disconnect').onclick = (event) => {
+        videoTracks[0].stop()
+        hide('#disconnect')
+        show('#connect')
+      }
+
+      function show(query) {
+        document.querySelector(query).style.display = ''
+      }
+
+      function hide(query) {
+        document.querySelector(query).style.display = 'none'
+      }
+
+      function errorMsg(error) {
+        setText('#error', error)
+        show('#error')
+        setTimeout(() => (hide('#error')), 3000)
+      }
+
+      function setText(query, text) {
+        document.querySelector(query).innerText = text
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="app">
+    <div id="control">
+      <button id="connect">Connect Camera</button>
+      <button id="disconnect">Disonnect Camera</button>
+      <span id="error"></span>
+    </div>
+    <div id="video-wrapper">
+      <video id="video">Video stream not available.</video>
+      <div id="spec">
+        <div>Device: <span id="device"></span></div>
+        <div>Max Resolution: <span id="width">W</span> x <span id="height">H</span> px</div>
+        <div>Aspect Ratio: <span id="aspect-ratio">ratio</span></div>
+        <div>Frame Rate: <span id="frame-rate">fr</span></div>
+      </div>
+    </div>
+</body>
+
+</html>
