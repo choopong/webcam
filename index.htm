@@ -72,6 +72,7 @@
       document.querySelector('#disconnect').onclick = (event) => {
         videoTracks[0].stop()
         hide('#disconnect')
+        hide('#spec')
         show('#connect')
       }
 
