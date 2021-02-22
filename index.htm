@@ -21,7 +21,7 @@
     }
     #spec {
       color: white;
-      background-color:rgba(0, 0, 0, 0.5);;
+      background-color:rgba(0, 0, 0, 0.5);
       position: absolute;
       top: 0;
       left: 0;
@@ -47,8 +47,7 @@
             videoTracks[0].applyConstraints({
               width: videoTracks[0].getCapabilities().width.max,
               height: videoTracks[0].getCapabilities().height.max,
-              frameRate: videoTracks[0].getCapabilities().frameRate.max,
-              resizeMode: "crop-and-scale"
+              frameRate: videoTracks[0].getCapabilities().frameRate.max
             }).then(() => {
               video.srcObject = stream
               video.onloadedmetadata = function(event) {
