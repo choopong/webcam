@@ -42,7 +42,7 @@
 
       document.querySelector('#connect').onclick = (event) => {
         navigator.mediaDevices.getUserMedia({ video: true})
-          .then(function (stream) {
+          .then((stream) => {
             videoTracks = stream.getVideoTracks()     
             videoTracks[0].applyConstraints({
               width: videoTracks[0].getCapabilities().width.max,
@@ -50,9 +50,7 @@
               frameRate: videoTracks[0].getCapabilities().frameRate.max
             }).then(() => {
               video.srcObject = stream
-              video.onloadedmetadata = function(event) {
-                video.play();
-              };
+              video.onloadedmetadata = (event) => video.play()
               setText('#device', videoTracks[0].label)
               setText('#width', videoTracks[0].getSettings().width)
               setText('#height', videoTracks[0].getSettings().height)
@@ -63,9 +61,7 @@
               show('#spec')
             })
           })
-          .catch(function (error) {
-            errorMsg(error)
-          })
+          .catch((error) => errorMsg(error))
       }
 
       document.querySelector('#disconnect').onclick = (event) => {
@@ -91,7 +87,7 @@
       function errorMsg(error) {
         setText('#error', error)
         show('#error')
-        setTimeout(() => (hide('#error')), 3000)
+        setTimeout(() => hide('#error'), 3000)
       }
 
       function setText(query, text) {
