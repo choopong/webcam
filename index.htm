@@ -24,11 +24,7 @@
       background-color:rgba(0, 0, 0, 0.5);;
       position: absolute;
       top: 0;
-      right: 0;
-    }
-    #video {
-      max-width: 100%;
-      max-height: 100%;
+      left: 0;
     }
   </style>
 
@@ -40,8 +36,12 @@
       hide('#disconnect')
       hide('#spec')
 
+      resizeVideo()
+
+      window.onresize = resizeVideo
+
       document.querySelector('#connect').onclick = (event) => {
-        navigator.mediaDevices.getUserMedia({ video: true, width: 3840 })
+        navigator.mediaDevices.getUserMedia({ video: true})
           .then(function (stream) {
             videoTracks = stream.getVideoTracks()     
             videoTracks[0].applyConstraints({
@@ -75,6 +75,11 @@
         show('#connect')
       }
 
+      function resizeVideo() {
+        document.querySelector('#video').style['max-width'] = document.querySelector('#video-wrapper').clientWidth
+        document.querySelector('#video').style['max-height'] = document.querySelector('#video-wrapper').clientHeight
+      } 
+
       function show(query) {
         document.querySelector(query).style.display = ''
       }
@@ -100,7 +105,7 @@
   <div id="app">
     <div id="control">
       <button id="connect">Connect Camera</button>
-      <button id="disconnect">Disonnect Camera</button>
+      <button id="disconnect">Disconnect Camera</button>
       <span id="error"></span>
     </div>
     <div id="video-wrapper">
